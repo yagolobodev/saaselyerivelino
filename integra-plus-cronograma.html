@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<!-- [Previous HEAD and STYLE sections remain exactly the same...] -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integra+ - Cronograma de Desenvolvimento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* [Previous styles remain exactly the same...] */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scrollbar-width: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .slides-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .slide {
+            flex: 0 0 100vw;
+            height: 100vh;
+            scroll-snap-align: start;
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+        }
+
+        .slide-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            width: 100%;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .phase-number {
+            font-size: 120px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.1);
+            position: absolute;
+            top: -60px;
+            left: -20px;
+            z-index: -1;
+        }
+
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+            filter: grayscale(100%);
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #fff;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .phase-description {
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .task-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .task-section:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .task-item {
+            margin: 15px 0;
+            padding-left: 25px;
+            position: relative;
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .task-item::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #fff;
+        }
+
+        .navigation {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .nav-dot.active {
+            background: #fff;
+        }
+
+        .swipe-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9em;
+            z-index: 100;
+            animation: fadeInOut 2s infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .slide-content {
+                padding: 20px;
+                margin: 0 10px;
+            }
+
+            .phase-number {
+                font-size: 80px;
+                top: -40px;
+                left: -10px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.8em;
+            }
+
+            .task-item {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="swipe-indicator">
+        Deslize para navegar →
+    </div>
+
+    <div class="slides-container">
+        <!-- Fase 1: Design -->
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1600" alt="Design" class="background-image">
+            <div class="slide-content">
+                <div class="phase-number">01</div>
+                <h1>Integra+</h1>
+                <h2>Fase 1: Protótipo e Design UX/UI</h2>
+                <div class="phase-description">
+                    Mês 1: Definição da experiência do usuário e identidade visual do sistema.
+                </div>
+                <div class="task-section">
+                    <div class="task-item">Criar wireframes e mockups para todas as telas</div>
+                    <div class="task-item">Desenvolver protótipos interativos para validação</div>
+                    <div class="task-item">Definir identidade visual e guidelines de design</div>
+                    <div class="task-item">Validar o design com stakeholders</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fase 2: Backend Parte 1 -->
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1600" alt="Backend" class="background-image">
+            <div class="slide-content">
+                <div class="phase-number">02</div>
+                <h2>Fase 2: Backend - Infraestrutura Base</h2>
+                <div class="phase-description">
+                    Mês 2: Desenvolvimento da infraestrutura fundamental do sistema.
+                </div>
+                <div class="task-section">
+                    <div class="task-item">Configurar ambiente de desenvolvimento</div>
+                    <div class="task-item">Implementar arquitetura base do sistema</div>
+                    <div class="task-item">Configurar Docker e containers</div>
+                    <div class="task-item">Implementar sistema de autenticação e autorização</div>
+                    <div class="task-item">Configurar banco de dados principal</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fase 3: Backend Parte 2 -->
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?w=1600" alt="Backend 2" class="background-image">
+            <div class="slide-content">
+                <div class="phase-number">03</div>
+                <h2>Fase 3: Backend - Funcionalidades Core</h2>
+                <div class="phase-description">
+                    Mês 3: Desenvolvimento das funcionalidades principais do backend.
+                </div>
+                <div class="task-section">
+                    <div class="task-item">Desenvolver API REST completa</div>
+                    <div class="task-item">Implementar sistema de cache</div>
+                    <div class="task-item">Criar microserviços necessários</div>
+                    <div class="task-item">Implementar sistema de logs e monitoramento</div>
+                    <div class="task-item">Desenvolver sistema de backup automático</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fase 4: Frontend -->
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=1600" alt="Frontend" class="background-image">
+            <div class="slide-content">
+                <div class="phase-number">04</div>
+                <h2>Fase 4: Frontend</h2>
+                <div class="phase-description">
+                    Mês 4: Desenvolvimento da interface do usuário e integração com backend.
+                </div>
+                <div class="task-section">
+                    <div class="task-item">Implementar componentes base do sistema</div>
+                    <div class="task-item">Desenvolver páginas principais</div>
+                    <div class="task-item">Integrar com APIs do backend</div>
+                    <div class="task-item">Implementar sistema de formulários dinâmicos</div>
+                    <div class="task-item">Criar dashboard interativo</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fase 5: Funcionalidades Avançadas -->
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600" alt="Funcionalidades" class="background-image">
+            <div class="slide-content">
+                <div class="phase-number">05</div>
+                <h2>Fase 5: Funcionalidades Avançadas</h2>
+                <div class="phase-description">
+                    Mês 5: Implementação de recursos avançados e relatórios.
+                </div>
+                <div class="task-section">
+                    <div class="task-item">Desenvolver sistema de relatórios avançados</div>
+                    <div class="task-item">Implementar exportação de dados</div>
+                    <div class="task-item">Criar banco de talentos</div>
+                    <div class="task-item">Implementar sistema de notificações</div>
+                    <div class="task-item">Desenvolver área administrativa</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fase 6: Testes e Entrega -->
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1600132806370-bf17e65e942f?w=1600" alt="Testes" class="background-image">
+            <div class="slide-content">
+                <div class="phase-number">06</div>
+                <h2>Fase 6: Testes e Entrega</h2>
+                <div class="phase-description">
+                    Mês 6: Finalização, testes e preparação para produção.
+                </div>
+                <div class="task-section">
+                    <div class="task-item">Realizar testes de integração</div>
+                    <div class="task-item">Executar testes de carga e performance</div>
+                    <div class="task-item">Otimizar queries e performance geral</div>
+                    <div class="task-item">Preparar documentação técnica e de usuário</div>
+                    <div class="task-item">Realizar deploy em produção</div>
+                    <div class="task-item">Treinar equipe do cliente</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <div class="nav-dot active"></div>
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slidesContainer = document.querySelector('.slides-container');
+            const dots = document.querySelectorAll('.nav-dot');
+            
+            slidesContainer.addEventListener('scroll', () => {
+                const index = Math.round(slidesContainer.scrollLeft / window.innerWidth);
+                dots.forEach(dot => dot.classList.remove('active'));
+                if (dots[index]) {
+                    dots[index].classList.add('active');
+                }
+            });
+
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    slidesContainer.scrollTo({
+                        left: index * window.innerWidth,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            slidesContainer.addEventListener('scroll', () => {
+                document.querySelector('.swipe-indicator').style.opacity = '0';
+            }, { once: true });
+        });
+    </script>
+</body>
+</html>
